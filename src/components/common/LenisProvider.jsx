@@ -1,7 +1,10 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePathname } from "next/navigation";
+gsap.registerPlugin(ScrollTrigger);
 
 export default function LenisProvider({ children }) {
   const lenis = useRef(null);
@@ -31,12 +34,12 @@ export default function LenisProvider({ children }) {
     lenis.current = instance;
     window.lenis = instance;
 
-    let frame;
-    const raf = (time) => {
-      instance.raf(time);
-      frame = requestAnimationFrame(raf);
-    };
-    frame = requestAnimationFrame(raf);
+    // Drive Lenis from GSAP's ticker so ScrollTrigger (pins, scrubs) updates in
+    // the same frame as the scroll position — otherwise pinned sections jitter.
+    instance.on("scroll", ScrollTrigger.update);
+    const raf = (time) => instance.raf(time * 1000);
+    gsap.ticker.add(raf);
+    gsap.ticker.lagSmoothing(0);
 
     const handleResize = () => {
       instance.resize();
@@ -44,7 +47,7 @@ export default function LenisProvider({ children }) {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      cancelAnimationFrame(frame);
+      gsap.ticker.remove(raf);
       window.removeEventListener("resize", handleResize);
       instance.destroy();
       lenis.current = null;

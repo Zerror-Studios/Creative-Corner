@@ -1,385 +1,154 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
-import InfoAbout from "./InfoAbout";
+import { useGSAP } from "@gsap/react";
 import AboutUs from "./AboutUs";
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const AboutSection = () => {
-  const mainContainer = useRef();
-  const scrollContainer = useRef();
+  const section = useRef();
+  const track = useRef();
 
-  useEffect(() => {
-    if (!mainContainer.current || !scrollContainer.current) return;
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-    // Disable horizontal scroll animation on mobile
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
+      // Desktop: pin the section and slide the strip horizontally.
+      // Below lg the panels simply stack — no pin, no extra scroll distance.
+      // matchMedia reverts / rebuilds this automatically when crossing the breakpoint.
+      mm.add("(min-width: 1024px)", () => {
+        const distance = () =>
+          track.current.scrollWidth - section.current.clientWidth;
 
-    const totalScrollWidth =
-      scrollContainer.current.scrollWidth - window.innerWidth;
+        // Vertical scroll needed per px of horizontal travel (0.5 = half, ~3 wheel scrolls instead of ~6)
+        const scrollRatio = 0.3;
 
-    var sliderTween = gsap.timeline({
-      scrollTrigger: {
-        trigger: mainContainer.current,
-        start: "top top",
-        end: () => `+=${totalScrollWidth}`,
-        pin: true,
-        scrub: true,
-      },
-    });
+        gsap.to(track.current, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: section.current,
+            start: "top top",
+            end: () => `+=${distance() * scrollRatio}`,
+            pin: true,
+            scrub: true,
+            invalidateOnRefresh: true,
+            refreshPriority: 1,
+          },
+        });
+      });
 
-    sliderTween.to(scrollContainer.current, {
-      x: -totalScrollWidth,
-      ease: "none",
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
-
-  useEffect(() => {
-    const PLT1 = gsap.timeline({
-      scrollTrigger: {
-        trigger: scrollContainer.current,
-        start: "top top",
-        end: "top top",
-        scrub: true,
-      },
-    });
-    PLT1.to(".AboutLine", {
-      width: "100%",
-    });
-  }, []);
+      // Navbar "About" underline (lives outside this section, so no selector text)
+      gsap.to(document.querySelectorAll(".AboutLine"), {
+        width: "100%",
+        scrollTrigger: {
+          trigger: section.current,
+          start: "top top",
+          end: "top top",
+          scrub: true,
+        },
+      });
+    },
+    { scope: section },
+  );
 
   return (
-    <>
-      {/* ─── DESKTOP: horizontal scroll ─── */}
+    <section
+      id="about"
+      ref={section}
+      className="aboutDIV relative w-full mt-[100vh] bg-white overflow-x-clip lg:h-screen lg:overflow-hidden"
+    >
       <div
-        id="about"
-        ref={mainContainer}
-        className="hidden md:flex w-full h-screen aboutDIV overflow-x-hidden relative bg-white mt-[100vh] pointer-events-none"
+        ref={track}
+        className="flex flex-col lg:flex-row lg:w-max lg:h-full lg:will-change-transform"
       >
-        <div
-          ref={scrollContainer}
-          className="w-fit h-screen flex fixed overflow-hidden top-0 left-0 pointer-events-none"
-        >
-          {/* Reel-1 */}
-          <div className="w-[40vw] h-full overflow-hidden">
-            <video
-              muted
-              autoPlay
-              loop
-              src={`/Video/video8.mp4`}
-              className="w-full h-full object-cover object-center"
-            />
-          </div>
+        {/* Reel-1 */}
+        <Reel src={`/Data/IMG_4843.mp4`} />
 
-          {/* Reel-2: photo collage */}
-          <div className="w-[80vw] h-full flex justify-center items-center">
-            <PhotoCollage />
-          </div>
-
-          {/* Reel-3 */}
-          <div className="w-[40vw] h-full overflow-hidden">
-            <video
-              muted
-              autoPlay
-              loop
-              src={`/Video/video1.mp4`}
-              className="w-full h-full object-cover object-center"
-            />
-          </div>
-
-          <AboutUs/>
-
-        </div>
-      </div>
-
-      {/* ─── MOBILE: vertical stack ─── */}
-      <div
-        id="about"
-        className="flex md:hidden flex-col w-full mt-[100vh] bg-white"
-      >
-        {/* Video 1 */}
-        <div className="w-full h-svh overflow-hidden">
-          <video
-            muted
-            autoPlay
-            loop
-            playsInline
-            src={`/Video/video8.mp4`}
-            className="w-full h-full object-cover object-center"
-          />
+        {/* Reel-2: photo collage */}
+        <div className="w-full flex justify-center items-center py-12 px-4 sm:px-8 lg:w-[80vw] lg:h-full lg:p-0 lg:shrink-0">
+          <PhotoCollage />
         </div>
 
-        {/* Photo collage */}
-        <div className="w-full flex justify-center items-center py-8 px-4">
-          <PhotoCollage mobile />
-        </div>
+        {/* Reel-3 */}
+        <Reel src={`/Data/IMG_4842.mp4`} />
 
-        {/* Video 2 */}
-        <div className="w-full h-svh overflow-hidden">
-          <video
-            muted
-            autoPlay
-            loop
-            playsInline
-            src={`/Video/video1.mp4`}
-            className="w-full h-full object-cover object-center"
-          />
-        </div>
-
-        {/* Text section */}
         <AboutUs />
       </div>
-    </>
+    </section>
   );
 };
 
-/* ─── Photo Collage ─── */
-const PhotoCollage = ({ mobile = false }) => (
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(12, 1fr)",
-      gridTemplateRows: "repeat(10, 1fr)",
-      width: mobile ? "100%" : "clamp(420px, 58vw, 700px)",
-      height: mobile
-        ? "clamp(340px, 80vw, 480px)"
-        : "clamp(480px, 80vh, 820px)",
-      gap: "4px",
-      position: "relative",
-    }}
-  >
-    {/* "CR" */}
-    <div
-      className="hl-word Text_Color_A Font_Main"
-      style={{
-        gridColumn: "1 / 6",
-        gridRow: "1 / 4",
-        fontSize: mobile
-          ? "clamp(2rem, 10vw, 3.5rem)"
-          : "clamp(3.5rem, 8vw, 10rem)",
-        display: "flex",
-        alignItems: "flex-end",
-        paddingBottom: "4px",
-        zIndex: 2,
-      }}
-    >
-      CR
-    </div>
-
-    {/* "EAT" */}
-    <div
-      className="hl-word Text_Color_A Font_Main"
-      style={{
-        gridColumn: "6 / 13",
-        gridRow: "4 / 7",
-        fontSize: mobile
-          ? "clamp(1.8rem, 9vw, 3rem)"
-          : "clamp(3rem, 7vw, 9rem)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        zIndex: 2,
-      }}
-    >
-      EAT
-    </div>
-
-    {/* "IVE" */}
-    <div
-      className="hl-word Text_Color_A Font_Main"
-      style={{
-        gridColumn: "1 / 9",
-        gridRow: "8 / 11",
-        fontSize: mobile
-          ? "clamp(1.8rem, 9vw, 3rem)"
-          : "clamp(3rem, 7vw, 9rem)",
-        display: "flex",
-        alignItems: "flex-start",
-        paddingTop: "4px",
-        zIndex: 2,
-      }}
-    >
-      IVE
-    </div>
-
-    {/* Photo 1 */}
-    <div style={{ gridColumn: "6 / 13", gridRow: "1 / 4", overflow: "hidden" }}>
-      <img
-        src={`/img/about/img1.jpg`}
-        alt=""
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(100%)",
-        }}
-      />
-    </div>
-
-    {/* Photo 2 */}
-    <div style={{ gridColumn: "1 / 7", gridRow: "4 / 7", overflow: "hidden" }}>
-      <img
-        src={`/img/about/img2.jpg`}
-        alt=""
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(100%)",
-        }}
-      />
-    </div>
-
-    {/* Photo 3 */}
-    <div style={{ gridColumn: "1 / 6", gridRow: "7 / 11", overflow: "hidden" }}>
-      <img
-        src={`/img/about/img3.jpg`}
-        alt=""
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(100%)",
-        }}
-      />
-    </div>
-
-    {/* Photo 4 */}
-    <div style={{ gridColumn: "9 / 13", gridRow: "4 / 8", overflow: "hidden" }}>
-      <img
-        src={`/img/about/img4.jpg`}
-        alt=""
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(100%)",
-        }}
-      />
-    </div>
-
-    {/* Photo 5 */}
-    <div
-      style={{ gridColumn: "6 / 10", gridRow: "7 / 10", overflow: "hidden" }}
-    >
-      <img
-        src={`/img/about/img5.jpg`}
-        alt=""
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(100%)",
-        }}
-      />
-    </div>
-
-    {/* Photo 6 */}
-    <div
-      style={{ gridColumn: "10 / 13", gridRow: "8 / 11", overflow: "hidden" }}
-    >
-      <img
-        src={`/img/about/img6.jpg`}
-        alt=""
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(100%)",
-        }}
-      />
-    </div>
-
-    {/* Photo 7 */}
-    <div style={{ gridColumn: "6 / 10", gridRow: "5 / 7", overflow: "hidden" }}>
-      <img
-        src={`/img/about/img7.jpg`}
-        alt=""
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(100%)",
-        }}
-      />
-    </div>
+/* ─── Video Reel ─── */
+const Reel = ({ src }) => (
+  <div className="w-full aspect-[3/4] max-h-svh overflow-hidden lg:w-[40vw] lg:h-full lg:max-h-none lg:aspect-auto lg:shrink-0">
+    <video
+      muted
+      autoPlay
+      loop
+      playsInline
+      src={src}
+      className="w-full h-full object-cover object-center"
+    />
   </div>
 );
 
-/* ─── About Text Section ─── */
-const AboutText = ({ mobile = false }) => (
-  <section className="  text-neutral-800 h-full  px-0 md:px-16 lg:px-24 py-0 md:py-20">
-    <div
-      className={`max-w-6xl mx-auto ${
-        mobile
-          ? "flex flex-col gap-8"
-          : "grid grid-cols-1 md:grid-cols-3 gap-12"
-      }`}
-    >
-      {/* Images column */}
-      <div
-        className={`flex gap-4 ${
-          mobile ? "flex-row w-full" : "md:col-span-1 flex-col gap-10"
-        }`}
-      >
-        {/* <div className={mobile ? "w-1/2" : "w-full"}>
-          <Image
-            src={`/img/about/img3.jpg`}
-            alt="coin in hand"
-            width={400}
-            height={400}
-            className="object-cover grayscale w-full"
-          />
-        </div>
-        <div className={mobile ? "w-1/2" : "w-full"}>
-          <Image
-            src={`/img/about/img4.jpg`}
-            alt="coin close"
-            width={400}
-            height={400}
-            className="object-cover grayscale w-full"
-          />
-        </div> */}
-      </div>
+/* ─── Photo Collage ─── */
+const words = [
+  {
+    text: "CR",
+    style: { gridColumn: "1 / 6", gridRow: "1 / 4", paddingBottom: "4px" },
+    className:
+      "items-end text-[clamp(2rem,10vw,3.5rem)] lg:text-[clamp(3.5rem,8vw,10rem)]",
+  },
+  {
+    text: "EAT",
+    style: { gridColumn: "6 / 13", gridRow: "4 / 7" },
+    className:
+      "items-center justify-end text-[clamp(1.8rem,9vw,3rem)] lg:text-[clamp(3rem,7vw,9rem)]",
+  },
+  {
+    text: "IVE",
+    style: { gridColumn: "1 / 9", gridRow: "8 / 11", paddingTop: "4px" },
+    className:
+      "items-start text-[clamp(1.8rem,9vw,3rem)] lg:text-[clamp(3rem,7vw,9rem)]",
+  },
+];
 
-      {/* Text column */}
+const photos = [
+  { src: "/img/about/img1.jpg", gridColumn: "6 / 13", gridRow: "1 / 4" },
+  { src: "/img/about/img2.jpg", gridColumn: "1 / 7", gridRow: "4 / 7" },
+  { src: "/img/about/img3.jpg", gridColumn: "1 / 6", gridRow: "7 / 11" },
+  { src: "/img/about/img4.jpg", gridColumn: "9 / 13", gridRow: "4 / 8" },
+  { src: "/img/about/img5.jpg", gridColumn: "6 / 10", gridRow: "7 / 10" },
+  { src: "/img/about/img6.jpg", gridColumn: "10 / 13", gridRow: "8 / 11" },
+  { src: "/img/about/img7.jpg", gridColumn: "6 / 10", gridRow: "5 / 7" },
+];
+
+const PhotoCollage = () => (
+  <div className="relative grid grid-cols-12 grid-rows-10 gap-1 w-full max-w-[600px] h-[clamp(340px,80vw,480px)] lg:max-w-none lg:w-[clamp(420px,58vw,700px)] lg:h-[clamp(480px,80vh,820px)]">
+    {words.map(({ text, style, className }) => (
       <div
-        className={`flex justify-center items-center ${
-          mobile ? "w-full" : "md:col-span-2"
-        }`}
+        key={text}
+        className={`hl-word Text_Color_A Font_Main flex z-[2] ${className}`}
+        style={style}
       >
-        <div
-          className={`h-fit text-justify ${
-            mobile ? "w-full" : "max-w-lg ml-auto"
-          }`}
-        >
-          <div className="space-y-6 text-[18px] leading-[1.6]">
-            <p>
-             Welcome to Creative Corner — a passionate team of digital marketing
-          strategists, creatives, and tech-savvy experts dedicated to helping
-          brands thrive in the ever-evolving world of social media and online
-          marketing.
-          <br />
-          <br />
-          Founded with a vision to empower businesses with powerful digital
-          tools, we blend creativity with data-driven strategies to deliver
-          measurable results. Whether you're a startup or a growing enterprise,
-          we craft customized campaigns that speak your brand's language and
-          drive real impact.
-            </p>
-            
-          </div>
-        </div>
+        {text}
       </div>
-    </div>
-  </section>
+    ))}
+
+    {photos.map(({ src, gridColumn, gridRow }) => (
+      <div key={src} className="overflow-hidden" style={{ gridColumn, gridRow }}>
+        <img
+          src={src}
+          alt=""
+          decoding="async"
+          className="w-full h-full object-cover grayscale"
+        />
+      </div>
+    ))}
+  </div>
 );
 
 export default AboutSection;

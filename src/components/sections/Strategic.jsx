@@ -32,19 +32,19 @@ const services = [
     ],
     data: [
       {
-        value: "8+",
+        value: "5+",
         unit: "years",
         description:
           "Experience designing websites for brands across lifestyle, wellness, and professional services industries.",
       },
       {
-        value: "120+",
+        value: "225+",
         unit: "projects",
         description:
           "Successfully launched from ideation through complex, custom builds.",
       },
       {
-        value: "35+",
+        value: "145+",
         unit: "happy clients",
         description:
           "Many of whom return for new collaborations, referrals, or ongoing design support.",
@@ -83,7 +83,7 @@ const services = [
     ],
     data: [
       {
-        value: "8+",
+        value: "5+",
         unit: "years",
         description:
           "Experience designing websites for brands across lifestyle, wellness, and professional services industries.",
@@ -95,7 +95,7 @@ const services = [
           "Successfully launched from ideation through complex, custom builds.",
       },
       {
-        value: "35+",
+        value: "45+",
         unit: "happy clients",
         description:
           "Many of whom return for new collaborations, referrals, or ongoing design support.",
@@ -124,19 +124,19 @@ const services = [
     ],
     data: [
       {
-        value: "8+",
+        value: "5+",
         unit: "years",
         description:
           "Experience designing websites for brands across lifestyle, wellness, and professional services industries.",
       },
       {
-        value: "120+",
+        value: "500+",
         unit: "projects",
         description:
           "Successfully launched from ideation through complex, custom builds.",
       },
       {
-        value: "35+",
+        value: "100+",
         unit: "happy clients",
         description:
           "Many of whom return for new collaborations, referrals, or ongoing design support.",
@@ -165,19 +165,19 @@ const services = [
     ],
     data: [
       {
-        value: "8+",
+        value: "5+",
         unit: "years",
         description:
           "Experience designing websites for brands across lifestyle, wellness, and professional services industries.",
       },
       {
-        value: "120+",
+        value: "80+",
         unit: "projects",
         description:
           "Successfully launched from ideation through complex, custom builds.",
       },
       {
-        value: "35+",
+        value: "50+",
         unit: "happy clients",
         description:
           "Many of whom return for new collaborations, referrals, or ongoing design support.",
@@ -329,7 +329,7 @@ const Strategic = () => {
               return (
                 <div
                   key={i}
-                  className="absolute top-1/2 left-1/2   translate-x-[-50%] translate-y-[-50%]"
+                  className="absolute top-1/2 left-1/2   translate-x-[-50%] translate-y-[-50%] hover:z-10"
                   style={{
                     transform: `
                   rotate(${item.angle}deg)
@@ -338,8 +338,13 @@ const Strategic = () => {
                 `,
                   }}
                 >
-                  <div className=" bg-white Text_Color_A ContDivList  opacity-0  max-w-[200px] flex flex-wrap  text-[13px] px-4 py-2 rounded-md shadow-md">
-                    {item.text}
+                  {/* GSAP animates ContDivList, so hover styles live on the inner card */}
+                  <div className="ContDivList opacity-0">
+                    <div className="group relative overflow-hidden bg-white text-[#ED1E24] max-w-[200px] flex flex-wrap text-[13px] px-4 py-2 rounded-md shadow-md cursor-default transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:bg-[#202020] hover:text-white hover:shadow-xl hover:shadow-black/30">
+                      {/* Shine sweep on hover */}
+                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out pointer-events-none" />
+                      <span className="relative">{item.text}</span>
+                    </div>
                   </div>
                 </div>
               );

@@ -7,6 +7,7 @@ import AnimatedTitle from "./AnimatedTitle";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
   const menuRef = useRef(null);
   const tl = useRef(null);
 
@@ -45,8 +46,43 @@ export default function Navbar() {
     }
   }, [isOpen]);
 
+  // Slide the navbar out while scrolling down, bring it back on scroll up
+  useEffect(() => {
+    const THRESHOLD = 6; // px of travel before the direction counts
+    const TOP_ZONE = 80; // always visible near the top of the page
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+
+      if (y < TOP_ZONE) {
+        setIsHidden(false);
+        lastY = y;
+      } else if (Math.abs(delta) > THRESHOLD) {
+        setIsHidden(delta > 0);
+        lastY = y;
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const hidden = isHidden && !isOpen; // never hide while the mobile menu is open
+
   return (
-    <nav className="fixed top-[0] pt-[2vh] left-0 right-0 z-99  text-white mix-blend-difference ">
+    <nav
+      className={`fixed top-[0] py-[0.5vh] left-0 right-0 z-99 bg-[white] text-[#ED1E24] will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${hidden ? "-translate-y-full" : "translate-y-0"}`}
+    >
       <div className="mx-auto w-full sm:px-6 lg:px-8 px-10">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -58,33 +94,33 @@ export default function Navbar() {
           <div className="hidden md:flex space-x-8 ">
             {/* <a href="#home" className="text-white relative group ">
               <AnimatedTitle text={'Index'} />
-              <div className="w-0 h-[1px] absolute bottom-[-12] left-0 transition-all duration-200 ease-out bg-white group-hover:w-full"></div>
+              <div className="w-0 h-[1px] absolute bottom-[-12] left-0 transition-all duration-200 ease-out bg-[#ED1E24] group-hover:w-full"></div>
             </a> */}
-            <a href="#about" className="relative group  h-fit  ">
+            <a href="#about" className="relative group  h-fit font-semibold!  ">
               <AnimatedTitle text={'About'} />
-              <div className="w-0 h-[1px] AboutLine absolute bottom-[0] left-0 transition-all duration-200 ease-out bg-white group-hover:w-full"></div>
+              <div className="w-0 h-[2px] AboutLine absolute bottom-[-5] left-0 transition-all duration-200 ease-out bg-[#ED1E24] group-hover:w-full"></div>
             </a>
-            <a href="#services" className=" relative group h-fit  ">
+            <a href="#services" className=" relative group h-fit font-semibold!  ">
               <AnimatedTitle text={'Expertise'} />
               
-              <div className="w-0 h-[1px] ExpertiseLine absolute bottom-[0] left-0 transition-all duration-200 ease-out bg-white group-hover:w-full"></div>
+              <div className="w-0 h-[2px] ExpertiseLine absolute bottom-[-5] left-0 transition-all duration-200 ease-out bg-[#ED1E24] group-hover:w-full"></div>
             </a>
-            <a href="#work" className=" relative group h-fit  ">
+            <a href="#work" className=" relative group h-fit font-semibold!  ">
               <AnimatedTitle text={'Work'} />
               
-              <div className="w-0 h-[1px] WorkLine absolute bottom-[0] left-0 transition-all duration-200 ease-out bg-white group-hover:w-full"></div>
+              <div className="w-0 h-[2px] WorkLine absolute bottom-[-5] left-0 transition-all duration-200 ease-out bg-[#ED1E24] group-hover:w-full"></div>
             </a>
-            <a href="#contact" className=" relative group h-fit  ">
+            <a href="#contact" className=" relative group h-fit  font-semibold! ">
               
               <div onClick={handleContactClick}><AnimatedTitle text={'Contact'} /></div>
-              <div className="w-0 h-[1px] Line absolute bottom-[0] left-0 transition-all duration-200 ease-out bg-white group-hover:w-full"></div>
+              <div className="w-0 h-[2px] Line absolute bottom-[-5] left-0 transition-all duration-200 ease-out bg-[#ED1E24] group-hover:w-full"></div>
             </a>
           </div>
 
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen((prev) => !prev)}
-            className="md:hidden  rounded-lg p-2 relative z-[999] text-gray-700 hover:bg-gray-100 focus:outline-none"
+            className="md:hidden  rounded-lg p-2 relative z-[999] text-[#ED1E24] hover:bg-black/5 focus:outline-none"
             aria-label="Toggle menu"
           >
             <svg

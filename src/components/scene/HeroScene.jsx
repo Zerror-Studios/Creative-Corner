@@ -5,14 +5,14 @@ import * as THREE from "three";
 import gsap from "gsap";
 
 const videoData = [
-  `/Video/video1.mp4`,
-  `/Video/video2.mp4`,
-  `/Video/video3.mp4`,
-  `/Video/video4.mp4`,
-  `/Video/video5.mp4`,
-  `/Video/video6.mp4`,
-  `/Video/video7.mp4`,
-  `/Video/video8.mp4`,
+  `/Data/IMG_7483.mp4`,
+  `/Data/IMG_8224.mp4`,
+  `/Data/IMG_2510.mp4`,
+  `/Data/IMG_7162.mp4`,
+  `/Data/IMG_6359.mp4`,
+  `/Data/IMG_8900.mp4`,
+  `/Data/IMG_8225.mp4`,
+  `/Data/IMG_8228.mp4`,
 ];
 
 const MeshMaker = ({ width, height, position, rotation, videoSrc, index }) => {
