@@ -19,6 +19,8 @@ const content = [
 
 // Lines indented on desktop to leave room for the two photos
 const PHOTO_LINES = [4, 5, 6, 7];
+// Mobile: the photos sit as a row before this line (between the two sentences)
+const PHOTO_ROW_BEFORE = 5;
 
 const AboutUs = () => {
   return (
@@ -33,24 +35,24 @@ const AboutUs = () => {
           </div>
         </div>
 
-        {/* Mobile: one flowing paragraph with the photos floated left.
+        {/* Mobile: one flowing paragraph, the photos as a full-width row between its sentences.
             Desktop: fixed lines, photos absolutely placed in the indented gap. */}
-        <p className="relative text-[clamp(1.5rem,6.5vw,2.5rem)] leading-[1.15] lg:flex lg:flex-col lg:w-fit lg:text-[2vw] lg:leading-[2.5vw]">
+        <p className="relative text-[clamp(1.375rem,6.5vw,2.5rem)] leading-[1.15] lg:flex lg:flex-col lg:w-fit lg:text-[2vw] lg:leading-[2.5vw]">
           {content.map((line, i) => (
             <Fragment key={i}>
-              {i === PHOTO_LINES[0] && (
-                <span className="float-left flex flex-col gap-2 mr-3 mt-1 mb-1 lg:contents">
+              {i === PHOTO_ROW_BEFORE && (
+                <span className="grid grid-cols-2 gap-3 max-w-md my-6 sm:gap-4 sm:my-8 lg:contents">
                   <img
                     src={`/img/about/img3.jpg`}
                     alt="Owner IMG"
                     decoding="async"
-                    className="w-[22vw] max-w-40 aspect-[11/9] object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-0 lg:w-[8vw] lg:h-[9vw] lg:max-w-none lg:aspect-auto"
+                    className="w-full aspect-8/9 object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-0 lg:w-[8vw] lg:h-[9vw] lg:aspect-auto"
                   />
                   <img
                     src={`/img/about/img1.jpg`}
                     alt="Owner IMG"
                     decoding="async"
-                    className="w-[22vw] max-w-40 aspect-[11/9] object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-[9vw] lg:w-[8vw] lg:h-[9vw] lg:max-w-none lg:aspect-auto"
+                    className="w-full aspect-8/9 object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-[9vw] lg:w-[8vw] lg:h-[9vw] lg:aspect-auto"
                   />
                 </span>
               )}

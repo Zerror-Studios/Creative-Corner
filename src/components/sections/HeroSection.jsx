@@ -39,7 +39,7 @@ const HeroSection = () => {
       <div className=" absolute w-full h-fit  flex justify-between items-center max-sm:top-[15%] max-sm:gap-2  max-sm:flex  max-sm:flex-col top-1/2 left-1/2 pointer-events-none -translate-x-1/2 -translate-y-1/2 px-10">
         <p className="Text_Color_B text-[1rem] leading-[1rem] max-w-[18%] max-sm:max-w-[100%] max-sm:hidden ">We Build Digital Experiences That Stand Out.</p>
         <p className="Text_Color_B text-[1rem] leading-[1rem] max-w-[20%] max-sm:max-w-[100%] max-sm:hidden text-end ">We combine creativity with clarity.</p>
-        <p className="Text_Color_B text-[1rem] leading-[1rem] max-w-[20%] max-sm:max-w-[100%] sm:hidden text-center ">We Build Digital Experiences That Stand Out. We combine creativity with clarity.</p>
+        <p className="Text_Color_B text-[1rem] leading-[1rem] max-w-[20%] max-sm:max-w-[100%] sm:hidden pt-10 text-center ">We Build Digital Experiences That Stand Out. We combine creativity with clarity.</p>
       </div>
     </div>
   );

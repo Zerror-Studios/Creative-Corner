@@ -209,11 +209,23 @@ export default function BrandingSection({ nameDiv, data }) {
           opacity: 1;
           transform: translateX(0);
         }
+
+        /* Mobile: the card is exactly one screen tall (content centred), tighter service list */
+        @media (max-width: 639px) {
+          .branding-section {
+            min-height: 0;
+          }
+
+          .service-item {
+            line-height: 1.4;
+            margin-top: 6px;
+          }
+        }
       `}</style>
 
       <section
         ref={sectionRef}
-        className={`branding-section w-full  px-8 md:px-5 pt-16 z-40 pb-20 abasolute ${nameDiv} top-[100%] left-0 `}
+        className={`branding-section w-full  px-8 md:px-5 max-sm:px-5 pt-16 max-sm:pt-20 z-40 pb-20 max-sm:pb-8 max-sm:h-svh max-sm:flex max-sm:flex-col max-sm:justify-center-safe abasolute ${nameDiv} top-[100%] left-0 `}
       >
         {/* Top row */}
         <div className="flex items-start justify-between mb-0 ">
@@ -234,7 +246,7 @@ export default function BrandingSection({ nameDiv, data }) {
 
           {/* Right side: headline + mock browser */}
           <div
-            className="flex flex-col  gap-10 max-sm:w-full sm:w-[58%] pt-[8vh] max-sm:pt-[6vh] "
+            className="flex flex-col  gap-10 max-sm:gap-6 max-sm:w-full sm:w-[58%] pt-[8vh] max-sm:pt-0 "
             // style={{ maxWidth: "58%", paddingTop: "8px" }}
           >
             {/* Headline */}
@@ -255,11 +267,11 @@ export default function BrandingSection({ nameDiv, data }) {
               className="reveal reveal-delay-3 max-sm:justify-center max-sm:items-center"
               style={{ marginLeft: "2px" }}
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl max-sm:w-full w-[70%]">
+              <div className="grid grid-cols-2 gap-2 max-w-2xl max-lg:w-full w-[70%]">
                 {data.data.map((stat, index) => (
                   <div
                     key={index}
-                    className="group bg-[#ED1E24] rounded-sm p-5 flex flex-col gap-2 shadow-sm cursor-default relative overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/30 hover:bg-[#FF2A30]"
+                    className="group bg-[#ED1E24] rounded-sm p-5 max-sm:p-4 flex flex-col gap-2 shadow-sm cursor-default relative overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/30 hover:bg-[#FF2A30]"
                   >
                     {/* Animated shine sweep on hover */}
                     <div
@@ -272,14 +284,14 @@ export default function BrandingSection({ nameDiv, data }) {
                     />
 
                     {/* Value + Unit row */}
-                    <div className="flex items-baseline gap-3 max-sm:justify-center">
+                    <div className="flex items-baseline gap-3 max-lg:flex-col max-lg:items-start max-sm:items-center max-lg:gap-1.5">
                       <span
-                        className="text-[3vw] max-sm:text-[5vw] text-white font-black tracking-tight text-whites    leading-none transition-transform duration-300 group-hover:scale-105 origin-left"
+                        className="text-[3vw] max-sm:text-[7vw] text-white font-black tracking-tight text-whites    leading-none transition-transform duration-300 group-hover:scale-105 origin-left max-sm:origin-center"
                       >
                         {stat.value}
                       </span>
                       <span
-                        className="text-sm font-medium text-white uppercase tracking-widests    transition-all duration-300 group-hover:text-white group-hover:tracking-[0.2em]"
+                        className="text-sm max-sm:text-[11px] font-medium text-white uppercase tracking-widests    transition-all duration-300 group-hover:text-white group-hover:tracking-[0.2em]"
                       >
                         {stat.unit}
                       </span>
@@ -293,15 +305,16 @@ export default function BrandingSection({ nameDiv, data }) {
             <div className="divider reveal reveal-delay-4" />
 
             {/* Services grid */}
-            <div className="grid grid-cols-3 gap-x-12 reveal reveal-delay-5">
+            <div className="grid grid-cols-3 gap-x-12 max-lg:gap-x-6 max-sm:gap-x-4 reveal reveal-delay-5">
               {data.capsules.map((col, ci) => (
                 <ul key={ci}>
                   {col.map((item, ii) => (
                     <div key={ii}>
-                      <li className="service-item max-sm:hidden flex flex-col gap-2  text-[16px]">
+                      {/* Hover title glitches when it wraps in narrow columns, and touch screens can't hover anyway */}
+                      <li className="service-item max-lg:hidden flex flex-col gap-2  text-[16px]">
                         <AnimatedTitle text={item} />
                       </li>
-                      <li className="service-item sm:hidden flex flex-col gap-2  text-[13px]">
+                      <li className="service-item lg:hidden flex flex-col gap-2  text-[15px] max-sm:text-[13px]">
                         {item}
                       </li>
                     </div>
