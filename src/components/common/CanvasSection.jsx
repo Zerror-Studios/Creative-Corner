@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 const CanvasSection = () => {
   const distance = 700;
   const [Fov, setFov] = useState(75);
+  const [active, setActive] = useState(true);
 
   const FovCalc = () => {
     const height = window.innerHeight;
@@ -62,13 +63,26 @@ const CanvasSection = () => {
     };
   }, []);
 
+  // Once the About section has slid over the hero, none of the canvas is visible. Stop
+  // rendering it (and its 8 video textures) and hide the blurred layer until we scroll back.
+  useEffect(() => {
+    const cover = ScrollTrigger.create({
+      trigger: ".aboutDIV",
+      start: "top top",
+      end: "max",
+      onToggle: (self) => setActive(!self.isActive),
+    });
+    return () => cover.kill();
+  }, []);
+
   return (
-    <div className="w-full h-svh CANVASContMAIN fixed top-0 left-0 overflow-hidden z-[-1] ">
+    <div className={`w-full h-svh CANVASContMAIN fixed top-0 left-0 overflow-hidden z-[-1] ${active ? "" : "invisible"}`}>
       <div className="overlay absolute w-full h-svh bg-black opacity-0 pointer-events-none"></div>
 
-      <Canvas className="w-full h-full canvas-container ">
+      {/* dpr capped at 1.5 — 3x phone screens otherwise render 4x the pixels for no visible gain */}
+      <Canvas className="w-full h-full canvas-container " dpr={[1, 1.5]} frameloop={active ? "always" : "never"}>
         <PerspectiveCamera makeDefault position={[0, 0, distance]} fov={Fov} />
-        <HeroScene />
+        <HeroScene active={active} />
         <OrbitControls
           minPolarAngle={Math.PI / 2}
           maxPolarAngle={Math.PI / 2}

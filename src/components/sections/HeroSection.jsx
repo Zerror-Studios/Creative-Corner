@@ -25,12 +25,22 @@ const HeroSection = () => {
         // markers:true
       },
     });
+
+    // Fully covered once About reaches the top — hide the blurred fixed layer so the
+    // browser stops compositing it on every scroll frame
+    const cover = ScrollTrigger.create({
+      trigger: ".aboutDIV",
+      start: "top top",
+      end: "max",
+      toggleClass: { targets: ".mainHomeCont", className: "invisible" },
+    });
+    return () => cover.kill();
   }, []);
 
   return (
     <div
       id="home"
-      className="w-full h-svh flex overflow-hidden mainHomeCont opacity-0 justify-start items-end fixed top-0 left-0 pointer-events-none p-10 max-sm:px-5 z-[-1] "
+      className="w-full h-screen flex overflow-hidden mainHomeCont opacity-0 justify-start items-end fixed top-0 left-0 pointer-events-none p-10 max-sm:px-5 z-[-1] "
     >
       <h1 className="text-[7vw] Font_Main leading-[6vw] max-sm:text-[18vw] max-sm:leading-[18vw] Text_Color_A">
         Creative <br /> Corner

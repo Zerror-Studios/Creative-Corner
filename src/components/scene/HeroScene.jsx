@@ -15,7 +15,7 @@ const videoData = [
   `/Data/IMG_8228.mp4`,
 ];
 
-const MeshMaker = ({ width, height, position, rotation, videoSrc, index }) => {
+const MeshMaker = ({ width, height, position, rotation, videoSrc, index, active }) => {
   const meshRef = useRef();
   const videoRef = useRef();
   const textureRef = useRef();
@@ -80,11 +80,17 @@ const MeshMaker = ({ width, height, position, rotation, videoSrc, index }) => {
     };
   }, [videoSrc, index]);
 
-  // Continuous video texture update
+  // Hero covered by the page — stop decoding this video until it's back in view
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (active) video.play().catch(() => {});
+    else video.pause();
+  }, [active]);
+
+  // VideoTexture uploads each new video frame on its own; forcing needsUpdate every
+  // render frame re-uploaded all 8 textures at 60fps
   useFrame(() => {
-    if (textureRef.current && videoRef.current?.readyState > 2) {
-      textureRef.current.needsUpdate = true;
-    }
     if (meshRef.current) {
     meshRef.current.lookAt(0, 0, 0);
   }
@@ -106,7 +112,7 @@ const MeshMaker = ({ width, height, position, rotation, videoSrc, index }) => {
   );
 };
 
-const HeroScene = () => {
+const HeroScene = ({ active = true }) => {
   const [geometry, setGeometry] = useState({ width: 20, height: 30 });
   const groupRef = useRef();
 
@@ -125,7 +131,8 @@ const HeroScene = () => {
 
       const width = baseWidth;
       const height = width * 1.5;
-      setGeometry({ width, height });
+      // Phones fire resize when the address bar shows/hides (height only) — keep the meshes
+      setGeometry((prev) => (prev.width === width ? prev : { width, height }));
     };
 
     updateGeometry();
@@ -157,7 +164,8 @@ const HeroScene = () => {
   useFrame((state, delta) => {
     if (groupRef.current) {
       // Rotate around Y-axis continuously
-      groupRef.current.rotation.y += delta * 0.3; // Adjust speed (0.3 = smooth rotation)
+      // delta is clamped so resuming after a pause doesn't jump the carousel
+      groupRef.current.rotation.y += Math.min(delta, 0.1) * 0.3; // Adjust speed (0.3 = smooth rotation)
     }
     
   });
@@ -180,6 +188,7 @@ const HeroScene = () => {
             rotation={rotation}
             videoSrc={videoSrc}
             index={index}
+            active={active}
           />
         );
       })}

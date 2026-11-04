@@ -16,6 +16,9 @@
 .Font_Sec{
   font-family: GR_Body;
 }
+.Font_Poppins{
+  font-family: var(--font-poppins), sans-serif;
+}
 
 
 body {
@@ -26,6 +29,13 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* From lenis/dist/lenis.css — only the height fix. Its stopped-state `overflow: clip` is left
+   out on purpose: the mobile menu pauses Lenis, and clip would block the menu's anchor jumps. */
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
 .Text_Color_A{

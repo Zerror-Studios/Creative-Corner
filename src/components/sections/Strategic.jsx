@@ -5,18 +5,21 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
-// `angle` places the pill on the desktop circle. On mobile there's no room beside the
-// headline, so `mobile` puts it on the inner (32vw) or middle (52vw) ring above/below it.
+// `angle` places the pill on the desktop circle.
 const orbitItems = [
-  { text: "A lack of clear strategy behind your content efforts.", angle: 20, mobile: { angle: 45, radius: "32vw" } },
-  { text: "Campaigns that feel forced instead of authentic.", angle: 70, mobile: { angle: 65, radius: "52vw" } },
-  { text: "No clear performance insights.", angle: 120, mobile: { angle: 115, radius: "52vw" } },
-  { text: "Content that looks good but fails to perform.", angle: 160, mobile: { angle: 135, radius: "32vw" } },
-  { text: "Brands blending in instead of standing out online.", angle: 210, mobile: { angle: 225, radius: "32vw" } },
-  { text: "Ideas without execution.", angle: 250, mobile: { angle: 245, radius: "52vw" } },
-  { text: "Brands blending in instead of standing out online.", angle: 300, mobile: { angle: 295, radius: "52vw" } },
-  { text: "Brands blending in instead of standing out online.", angle: 340, mobile: { angle: 315, radius: "32vw" } },
+  { text: "A lack of clear strategy behind your content efforts.", angle: 20 },
+  { text: "Campaigns that feel forced instead of authentic.", angle: 70 },
+  { text: "No clear performance insights.", angle: 120 },
+  { text: "Content that looks good but fails to perform.", angle: 160 },
+  { text: "Brands blending in instead of standing out online.", angle: 210 },
+  { text: "Ideas without execution.", angle: 250 },
+  { text: "Brands blending in instead of standing out online.", angle: 300 },
+  { text: "Brands blending in instead of standing out online.", angle: 340 },
 ];
+
+// The phone layout lists the pain points instead of orbiting them. The orbit repeats one
+// line three times; the list shows each point once.
+const painPoints = [...new Set(orbitItems.map((item) => item.text))];
 
 const services = [
   {
@@ -197,11 +200,9 @@ const services = [
 const Strategic = () => {
   useEffect(() => {
     const mm = gsap.matchMedia();
-    const breakpoints = {
-      isMobile: "(max-width: 639px)",
-      isDesktop: "(min-width: 640px)",
-    };
-    mm.add(breakpoints, ({ conditions }) => {
+    // Pinned orbit + stacking cards are tablet/desktop only — phones get the static
+    // StrategicMobile layout below, so nothing is scroll-driven there.
+    mm.add("(min-width: 640px)", () => {
       const PreTL = gsap.timeline({
         scrollTrigger: {
           trigger: ".CONTMAINSTRATEGIC",
@@ -230,21 +231,18 @@ const Strategic = () => {
           scrub: true,
         },
       });
-      // Mobile pills sit above/below the headline, so spinning them would sweep them across it
-      if (!conditions.isMobile) {
-        ATL.to(".ContDivListCOVER", {
-          rotateZ: "90deg",
+      ATL.to(".ContDivListCOVER", {
+        rotateZ: "90deg",
+        ease: "none",
+      });
+      ATL.to(
+        ".ContDivList",
+        {
+          rotateZ: "-90deg", // counter-rotate each pill to keep text upright
           ease: "none",
-        });
-        ATL.to(
-          ".ContDivList",
-          {
-            rotateZ: "-90deg", // counter-rotate each pill to keep text upright
-            ease: "none",
-          },
-          "<",
-        ); //
-      }
+        },
+        "<",
+      ); //
       ATL.to(
         ".ContDivList",
         {
@@ -310,8 +308,8 @@ const Strategic = () => {
   }, []);
 
   return (
-    <div id="services" className="w-full h-[600vh] relative CONTMAINSTRATEGIC ">
-      <div className="w-full h-svh BGRED overflow-hidden sticky top-0 left-0 flex justify-center items-center">
+    <div id="services" className="w-full h-[600vh] max-sm:h-auto relative CONTMAINSTRATEGIC ">
+      <div className="w-full h-svh BGRED overflow-hidden sticky top-0 left-0 flex justify-center items-center max-sm:hidden">
         {/* Center Text */}
         <div className="absolute text-center z-[-4] max-w-[420px]">
           <h1 className="text-white text-[max(2vw,1.25rem)] max-sm:text-[5vw] StrategicText  z-[-1] leading-[max(2vw,1.25rem)] max-sm:leading-[5vw] font-semibold tracking-tight">
@@ -340,16 +338,12 @@ const Strategic = () => {
               return (
                 <div
                   key={i}
-                  className="absolute top-1/2 left-1/2   translate-x-[-50%] translate-y-[-50%] hover:z-10 [transform:rotate(var(--angle))_translate(var(--orbit-r))_rotate(calc(-1*var(--angle)))] max-sm:[transform:rotate(var(--m-angle))_translate(var(--m-radius))_rotate(calc(-1*var(--m-angle)))]"
-                  style={{
-                    "--angle": `${item.angle}deg`,
-                    "--m-angle": `${item.mobile.angle}deg`,
-                    "--m-radius": item.mobile.radius,
-                  }}
+                  className="absolute top-1/2 left-1/2   translate-x-[-50%] translate-y-[-50%] hover:z-10 [transform:rotate(var(--angle))_translate(var(--orbit-r))_rotate(calc(-1*var(--angle)))]"
+                  style={{ "--angle": `${item.angle}deg` }}
                 >
                   {/* GSAP animates ContDivList, so hover styles live on the inner card */}
                   <div className="ContDivList opacity-0">
-                    <div className="group relative overflow-hidden bg-white text-[#ED1E24] max-w-[200px] max-sm:max-w-[40vw] flex flex-wrap max-sm:items-center max-sm:min-h-[calc(3lh+0.75rem)] text-[13px] max-sm:text-[11.5px] max-sm:leading-[1.35] px-4 max-sm:px-3 py-2 max-sm:py-1.5 rounded-md shadow-md cursor-default transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:bg-[#202020] hover:text-white hover:shadow-xl hover:shadow-black/30">
+                    <div className="group relative overflow-hidden bg-white text-[#ED1E24] max-w-[200px] flex flex-wrap text-[13px] px-4 py-2 rounded-md shadow-md cursor-default transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:bg-[#202020] hover:text-white hover:shadow-xl hover:shadow-black/30">
                       {/* Shine sweep on hover */}
                       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out pointer-events-none" />
                       <span className="relative">{item.text}</span>
@@ -371,8 +365,91 @@ const Strategic = () => {
           );
         })}
       </div>
+
+      <StrategicMobile />
     </div>
   );
 };
+
+// Phones: a plain, non-sticky layout that shows everything at once — the pain points as a
+// list on red, then every service in full (stats + all capsules) stacked on white.
+function StrategicMobile() {
+  const total = services.filter(Boolean).length;
+
+  return (
+    <div className="sm:hidden Font_Poppins">
+      {/* Intro */}
+      <div className="BGRED relative overflow-hidden px-5 pt-20 pb-16 text-white">
+        {/* Echo of the desktop orbit rings */}
+        <div className="pointer-events-none absolute -right-32 -top-32 size-80 rounded-full border border-white/20" />
+        <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full border border-dashed border-white/25" />
+
+        <h2 className="relative max-w-[16ch] text-[clamp(1.875rem,8.5vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">
+          Strategic Social Media Growth for Today’s Brands.
+        </h2>
+
+        <ul className="relative mt-10 border-t border-white/25">
+          {painPoints.map((text) => (
+            <li key={text} className="flex items-center gap-4 border-b border-white/25 py-4">
+              <span className="mt-0.5 grid size-2  shrink-0 place-items-center rounded-full bg-white text-[#ED1E24]">
+                {/* <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                  <path d="M7 7l10 10M17 7L7 17" />
+                </svg> */}
+              </span>
+              <p className="text-[15px] leading-snug text-white/90">{text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Services */}
+      <div className="bg-white px-5 text-[#0a0a0a]">
+        {services.map((item) => (
+          <article key={item.number} className="border-t border-black/10 py-12 first:border-t-0">
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-xs font-medium tabular-nums tracking-[0.2em] text-[#ED1E24]">
+                {item.number} / {String(total).padStart(2, "0")}
+              </span>
+              <span className="rounded-full border border-black/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.15em] text-black/55">
+                {item.category}
+              </span>
+            </div>
+
+            <h3 className="mt-5 text-[clamp(1.75rem,8vw,2.25rem)] font-semibold uppercase leading-[1.05] tracking-[-0.01em] text-[#ED1E24]">
+              {item.title}
+            </h3>
+            <p className="mt-3 text-[17px] font-medium leading-snug tracking-[-0.01em]">
+              {item.headline}
+            </p>
+
+            <div className="mt-7 grid grid-cols-2 border-l border-t border-black/10">
+              {item.data.map((stat) => (
+                <div key={stat.unit} className="border-b border-r border-black/10 px-4 py-4">
+                  <p className="text-[1.75rem] font-semibold leading-none tracking-tight text-[#ED1E24]">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.15em] text-black/50">
+                    {stat.unit}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <ul className="mt-7 flex flex-wrap gap-2">
+              {item.capsules.flat().map((capsule) => (
+                <li
+                  key={capsule}
+                  className="rounded-full border border-black/10 px-3.5 py-2 text-[13px] leading-none text-black/70"
+                >
+                  {capsule}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default Strategic;
