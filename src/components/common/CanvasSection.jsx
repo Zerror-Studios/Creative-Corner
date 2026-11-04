@@ -21,24 +21,34 @@ const CanvasSection = () => {
   useEffect(() => {
     FovCalc();
 
-    const CTL = gsap.timeline();
+    const mm = gsap.matchMedia();
+    const scrollOut = () => ({
+      trigger: ".aboutDIV",
+      start: "top bottom",
+      end: "top 50%", // scroll distance (tweak this)
+      scrub: true,
+      // markers: true,
+    });
 
-    // BLUR ON SCROLL
-    CTL.to(
-      ".CANVASContMAIN",
-      {
+    // BLUR ON SCROLL (desktop)
+    mm.add("(min-width: 1024px)", () => {
+      gsap.to(".CANVASContMAIN", {
         filter: "blur(10px) ", // adjust blur strength
         ease: "none",
-        scrollTrigger: {
-          trigger: ".aboutDIV",
-          start: "top bottom",
-          end: "top 50%", // scroll distance (tweak this)
-          scrub: true,
-          // markers: true,
-        },
-      },
-      "c1",
-    );
+        scrollTrigger: scrollOut(),
+      });
+    });
+
+    // Phones/tablets: blurring the full-screen WebGL canvas (8 playing video textures) with a
+    // radius that changes every scroll frame is the heaviest thing a phone GPU does on this
+    // page, right during the first swipe. Fade it back instead — opacity is composited for free.
+    mm.add("(max-width: 1023px)", () => {
+      gsap.to(".CANVASContMAIN", {
+        opacity: 0.45,
+        ease: "none",
+        scrollTrigger: scrollOut(),
+      });
+    });
 
     // black fade
     // CTL.to(
@@ -60,6 +70,7 @@ const CanvasSection = () => {
     window.addEventListener("resize", FovCalc);
     return () => {
       window.removeEventListener("resize", FovCalc);
+      mm.revert();
     };
   }, []);
 

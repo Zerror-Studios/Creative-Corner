@@ -388,15 +388,15 @@ function StrategicMobile() {
           Strategic Social Media Growth for Today’s Brands.
         </h2>
 
-        <ul className="relative mt-10 border-t border-white/25">
+        {/* The same white boxes as the desktop orbit, wrapping as a cloud. Tapping one darkens
+            it like the desktop hover does. */}
+        <ul className="relative mt-10 flex flex-wrap gap-2.5">
           {painPoints.map((text) => (
-            <li key={text} className="flex items-center gap-4 border-b border-white/25 py-4">
-              <span className="mt-0.5 grid size-2  shrink-0 place-items-center rounded-full bg-white text-[#ED1E24]">
-                {/* <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
-                  <path d="M7 7l10 10M17 7L7 17" />
-                </svg> */}
-              </span>
-              <p className="text-[15px] leading-snug text-white/90">{text}</p>
+            <li
+              key={text}
+              className="max-w-full rounded-md bg-white max-sm:w-full px-4 py-2.5 text-[14px] leading-snug text-[#ED1E24] shadow-md shadow-black/15 transition-[background-color,color,transform] duration-300 ease-out active:scale-[0.97] active:bg-[#202020] active:text-white"
+            >
+              {text}
             </li>
           ))}
         </ul>

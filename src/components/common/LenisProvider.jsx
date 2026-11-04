@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 // every ScrollTrigger for it (that's a visible hitch mid-scroll)
 ScrollTrigger.config({ ignoreMobileResize: true });
 
-// Horizontal scrollers (the Work rail on phones) keep their own native swipe
+// Horizontal scrollers (the Work rail) keep their own native wheel/trackpad scrolling
 const isHorizontalScroller = (node) =>
   node.scrollWidth > node.clientWidth &&
   ["auto", "scroll"].includes(getComputedStyle(node).overflowX);
@@ -37,18 +37,20 @@ export default function LenisProvider({ children }) {
     // Keep plain native scrolling for people who ask for reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Smooth scroll on every device: wheel on desktop, and touch on phones/tablets
-    // (syncTouch), so a swipe glides with inertia instead of the page's bare native scroll.
+    // Smooth wheel scrolling on desktop. Touch screens keep the browser's own scrolling:
+    // it runs off the main thread at the display's refresh rate (120Hz on newer phones)
+    // with the OS's momentum. Lenis' syncTouch replaced that with a JS-driven scroll capped
+    // to requestAnimationFrame (60fps on iOS), 1.2x faster than the finger and with its own
+    // fling curve, so every busy frame showed up as a stutter. Lenis still reports native
+    // scroll to ScrollTrigger, and lenis.stop() still blocks touch scrolling (menu/contact).
     const instance = new Lenis({
       duration: 1.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      syncTouch: true,
-      syncTouchLerp: 0.075,
+      syncTouch: false,
       direction: "vertical",
       gestureDirection: "vertical",
       wheelMultiplier: 0.8,
-      touchMultiplier: 1.2,
       infinite: false,
       prevent: isHorizontalScroller,
     });

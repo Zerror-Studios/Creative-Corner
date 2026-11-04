@@ -1,4 +1,5 @@
 import AnimatedTitle from "../common/AnimatedTitle";
+import LazyVideo from "../common/LazyVideo";
 
 const navLinks = [
   { name: "Work", path: "#work" },
@@ -129,12 +130,10 @@ export default function Footer() {
           </div>
 
           <div className="w-full max-w-[340px] md:w-[220px] lg:w-[260px] xl:w-[300px] aspect-[4/5] md:aspect-[3/4] overflow-hidden  bg-[#202020] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.45)]">
-            <video
-              muted
-              loop
-              autoPlay
-              playsInline
+            {/* Bottom of the page — downloads only once it's on screen, not at page open */}
+            <LazyVideo
               src={`/Data/IMG_8500.mp4`}
+              poster={`/Data/posters/IMG_8500-first.webp`}
               className="w-full h-full object-cover"
             />
           </div>
@@ -149,6 +148,8 @@ export default function Footer() {
               <img
                 src={`/img/logo/logo.webp`}
                 alt="Creative Corner"
+                loading="lazy"
+                decoding="async"
                 className="h-16 sm:h-20 lg:h-24 w-auto"
               />
             </div>

@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import AboutUs from "./AboutUs";
+import LazyVideo from "../common/LazyVideo";
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const AboutSection = () => {
@@ -64,7 +65,7 @@ const AboutSection = () => {
         className="flex flex-col lg:flex-row lg:w-max lg:h-full lg:will-change-transform"
       >
         {/* Reel-1 */}
-        <Reel src={`/Data/IMG_4843.mp4`} />
+        <Reel src={`/Data/IMG_4843.mp4`} poster={`/Data/posters/IMG_4843-first.webp`} />
 
         {/* Reel-2: photo collage */}
         <div className="w-full flex justify-center items-center py-12 px-4 sm:px-8 lg:w-[80vw] lg:h-full lg:p-0 lg:shrink-0">
@@ -72,7 +73,7 @@ const AboutSection = () => {
         </div>
 
         {/* Reel-3 */}
-        <Reel src={`/Data/IMG_4842.mp4`} />
+        <Reel src={`/Data/IMG_4842.mp4`} poster={`/Data/posters/IMG_4842-first.webp`} />
 
         <AboutUs />
       </div>
@@ -81,14 +82,12 @@ const AboutSection = () => {
 };
 
 /* ─── Video Reel ─── */
-const Reel = ({ src }) => (
+// Loads only once it's on screen (these are 10–14MB each and used to download at page open)
+const Reel = ({ src, poster }) => (
   <div className="w-full aspect-[3/4] max-h-svh overflow-hidden lg:w-[40vw] lg:h-full lg:max-h-none lg:aspect-auto lg:shrink-0">
-    <video
-      muted
-      autoPlay
-      loop
-      playsInline
+    <LazyVideo
       src={src}
+      poster={poster}
       className="w-full h-full object-cover object-center"
     />
   </div>
@@ -116,14 +115,16 @@ const words = [
   },
 ];
 
+// WebP copies of the 1920px JPGs, scaled to 900px on the short side (~2x the largest grid
+// cell on a retina screen): 2.3MB → 0.36MB for all seven
 const photos = [
-  { src: "/img/about/img1.jpg", gridColumn: "6 / 13", gridRow: "1 / 4" },
-  { src: "/img/about/img2.jpg", gridColumn: "1 / 7", gridRow: "4 / 7" },
-  { src: "/img/about/img3.jpg", gridColumn: "1 / 6", gridRow: "7 / 11" },
-  { src: "/img/about/img4.jpg", gridColumn: "9 / 13", gridRow: "4 / 8" },
-  { src: "/img/about/img5.jpg", gridColumn: "6 / 10", gridRow: "7 / 10" },
-  { src: "/img/about/img6.jpg", gridColumn: "10 / 13", gridRow: "8 / 11" },
-  { src: "/img/about/img7.jpg", gridColumn: "6 / 10", gridRow: "5 / 7" },
+  { src: "/img/about/img1.webp", gridColumn: "6 / 13", gridRow: "1 / 4" },
+  { src: "/img/about/img2.webp", gridColumn: "1 / 7", gridRow: "4 / 7" },
+  { src: "/img/about/img3.webp", gridColumn: "1 / 6", gridRow: "7 / 11" },
+  { src: "/img/about/img4.webp", gridColumn: "9 / 13", gridRow: "4 / 8" },
+  { src: "/img/about/img5.webp", gridColumn: "6 / 10", gridRow: "7 / 10" },
+  { src: "/img/about/img6.webp", gridColumn: "10 / 13", gridRow: "8 / 11" },
+  { src: "/img/about/img7.webp", gridColumn: "6 / 10", gridRow: "5 / 7" },
 ];
 
 const PhotoCollage = () => (
@@ -143,6 +144,7 @@ const PhotoCollage = () => (
         <img
           src={src}
           alt=""
+          loading="lazy"
           decoding="async"
           className="w-full h-full object-cover grayscale"
         />

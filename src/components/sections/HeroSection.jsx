@@ -13,17 +13,34 @@ const HeroSection = () => {
       ease: "power1.out",
     });
 
-    // BLUR ON SCROLL
-    gsap.to(".mainHomeCont", {
-      filter: "blur(10px) ", // adjust blur strength
-      ease: "none",
-      scrollTrigger: {
-        trigger:'.aboutDIV',
-        start: "top bottom",
-        end: "top 50%", // scroll distance (tweak this)
-        scrub: true,
-        // markers:true
-      },
+    const mm = gsap.matchMedia();
+    const scrollOut = () => ({
+      trigger: ".aboutDIV",
+      start: "top bottom",
+      end: "top 50%", // scroll distance (tweak this)
+      scrub: true,
+      // markers:true
+    });
+
+    // BLUR ON SCROLL (desktop)
+    mm.add("(min-width: 1024px)", () => {
+      gsap.to(".mainHomeCont", {
+        filter: "blur(10px) ", // adjust blur strength
+        ease: "none",
+        scrollTrigger: scrollOut(),
+      });
+    });
+
+    // Phones/tablets: a full-screen blur whose radius changes on every scroll frame makes the
+    // GPU re-blur the whole layer each frame of the first swipe — that's where the stutter
+    // came from. Fade the text out instead (opacity is composited for free). The children
+    // are faded, not .mainHomeCont itself, so this doesn't fight the intro fade-in above.
+    mm.add("(max-width: 1023px)", () => {
+      gsap.to(".mainHomeCont > *", {
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: scrollOut(),
+      });
     });
 
     // Fully covered once About reaches the top — hide the blurred fixed layer so the
@@ -34,13 +51,16 @@ const HeroSection = () => {
       end: "max",
       toggleClass: { targets: ".mainHomeCont", className: "invisible" },
     });
-    return () => cover.kill();
+    return () => {
+      cover.kill();
+      mm.revert();
+    };
   }, []);
 
   return (
     <div
       id="home"
-      className="w-full h-screen flex overflow-hidden mainHomeCont opacity-0 justify-start items-end fixed top-0 left-0 pointer-events-none p-10 max-sm:px-5 z-[-1] "
+      className="w-full h-svh flex overflow-hidden mainHomeCont opacity-0 justify-start items-end fixed top-0 left-0 pointer-events-none p-10 max-sm:px-5 z-[-1] "
     >
       <h1 className="text-[7vw] Font_Main leading-[6vw] max-sm:text-[18vw] max-sm:leading-[18vw] Text_Color_A">
         Creative <br /> Corner

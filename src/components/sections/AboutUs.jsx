@@ -43,14 +43,16 @@ const AboutUs = () => {
               {i === PHOTO_ROW_BEFORE && (
                 <span className="grid grid-cols-2 gap-3 max-w-md my-6 sm:gap-4 sm:my-8 lg:contents">
                   <img
-                    src={`/img/about/img3.jpg`}
+                    src={`/img/about/img3.webp`}
                     alt="Owner IMG"
+                    loading="lazy"
                     decoding="async"
                     className="w-full aspect-8/9 object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-0 lg:w-[8vw] lg:h-[9vw] lg:aspect-auto"
                   />
                   <img
-                    src={`/img/about/img1.jpg`}
+                    src={`/img/about/img1.webp`}
                     alt="Owner IMG"
+                    loading="lazy"
                     decoding="async"
                     className="w-full aspect-8/9 object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-[9vw] lg:w-[8vw] lg:h-[9vw] lg:aspect-auto"
                   />
