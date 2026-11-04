@@ -61,7 +61,13 @@ export default function LenisProvider({ children }) {
     instance.on("scroll", ScrollTrigger.update);
     const raf = (time) => instance.raf(time * 1000);
     gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
+    // Desktop only: phones/tablets stall for a moment while the WebGL canvas and its videos
+    // load, and with lag smoothing off GSAP jumps every running tween forward by that stall —
+    // the intro loader (PageLoading) and the hero fade-in skip straight to their end. Keep
+    // GSAP's default lag smoothing below 1024px so those animations pick up where they paused.
+    if (window.matchMedia("(min-width: 1024px)").matches) {
+      gsap.ticker.lagSmoothing(0);
+    }
 
     const handleResize = () => {
       instance.resize();
