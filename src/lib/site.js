@@ -1,7 +1,23 @@
 // One place for the facts the SEO tags, sitemap, robots, manifest and structured data share.
 
-// Production address. Override per deployment (e.g. a staging URL) with NEXT_PUBLIC_SITE_URL.
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://yourcreativecorner.com").replace(/\/$/, "");
+// The address the site is actually served from. The share banner, canonical link and sitemap
+// are absolute URLs built on it, so it must point at a host that serves THIS build — otherwise
+// WhatsApp/LinkedIn/etc. fetch the banner from a host that 404s and show no image.
+//   1. NEXT_PUBLIC_SITE_URL, if set
+//   2. On Vercel: the project's production domain. That is yourcreativecorner.com once the domain
+//      is added to the Vercel project, and the *.vercel.app domain until then.
+//   3. Otherwise (local builds) the final domain
+function resolveSiteUrl() {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  const vercelHost =
+    process.env.VERCEL_ENV === "production"
+      ? process.env.VERCEL_PROJECT_PRODUCTION_URL
+      : process.env.VERCEL_BRANCH_URL || process.env.VERCEL_URL;
+  if (vercelHost) return `https://${vercelHost}`;
+  return "https://yourcreativecorner.com";
+}
+
+export const SITE_URL = resolveSiteUrl().replace(/\/$/, "");
 
 export const site = {
   name: "Creative Corner",
