@@ -117,8 +117,10 @@ const PageLoading = () => {
     <div
       ref={container}
       className="w-full h-screen fixed flex justify-center items-center top-0 left-0 z-[1000] bg-white pointer-events-none"
+      aria-hidden="true"
     >
-      <h1 className="text-[2.2vw] md:w-1/2 w-full max-sm:text-[6.5vw]  text-center mx-auto">
+      {/* Intro overlay, not a heading — the page's one <h1> is in HeroSection */}
+      <div className="text-[2.2vw] md:w-1/2 w-full max-sm:text-[6.5vw]  text-center mx-auto">
         <div className="block overflow-hidden relative w-full">
           <div className="line1a Font_Main text-black w-full text-center">
             Hi
@@ -132,7 +134,7 @@ const PageLoading = () => {
             Creative Corner
           </div>
         </div>
-      </h1>
+      </div>
     </div>
   );
 };

@@ -10,7 +10,7 @@ const navLinks = [
 const contactLinks = [
   {
     label: "Email",
-    text: "contactus@yourcreativecorner.com",
+    text: "contact-us@yourcreativecorner.com",
     href: "mailto:contact-us@yourcreativecorner.com",
   },
   {

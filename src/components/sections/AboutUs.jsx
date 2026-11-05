@@ -31,7 +31,7 @@ const AboutUs = () => {
           about OurSelf.
 
           <div className="w-[10vw] h-[10vw] max-w-14 max-h-14 mt-2 mb-8 overflow-hidden lg:w-[3vw] lg:h-[3vw] lg:max-w-none lg:max-h-none lg:mb-0">
-            <img src={`/img/logo/icon.png`} alt="Di" className="w-full h-full object-cover object-center" />
+            <img src={`/img/logo/icon.png`} alt="" className="w-full h-full object-cover object-center" />
           </div>
         </div>
 
@@ -44,14 +44,14 @@ const AboutUs = () => {
                 <span className="grid grid-cols-2 gap-3 max-w-md my-6 sm:gap-4 sm:my-8 lg:contents">
                   <img
                     src={`/img/about/img3.webp`}
-                    alt="Owner IMG"
+                    alt="Model with curly hair posing for a fashion shoot"
                     loading="lazy"
                     decoding="async"
                     className="w-full aspect-8/9 object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-0 lg:w-[8vw] lg:h-[9vw] lg:aspect-auto"
                   />
                   <img
                     src={`/img/about/img1.webp`}
-                    alt="Owner IMG"
+                    alt="Filming a reel on a smartphone"
                     loading="lazy"
                     decoding="async"
                     className="w-full aspect-8/9 object-cover object-center lg:absolute lg:top-[10.5vw] lg:left-[9vw] lg:w-[8vw] lg:h-[9vw] lg:aspect-auto"

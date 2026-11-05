@@ -312,13 +312,13 @@ const Strategic = () => {
       <div className="w-full h-svh BGRED overflow-hidden sticky top-0 left-0 flex justify-center items-center max-sm:hidden">
         {/* Center Text */}
         <div className="absolute text-center z-[-4] max-w-[420px]">
-          <h1 className="text-white text-[max(2vw,1.25rem)] max-sm:text-[5vw] StrategicText  z-[-1] leading-[max(2vw,1.25rem)] max-sm:leading-[5vw] font-semibold tracking-tight">
+          <h2 className="text-white text-[max(2vw,1.25rem)] max-sm:text-[5vw] StrategicText  z-[-1] leading-[max(2vw,1.25rem)] max-sm:leading-[5vw] font-semibold tracking-tight">
             Strategic Social Media
             <br />
             Growth for Today’s
             <br />
             Brands.
-          </h1>
+          </h2>
         </div>
 
         {/* Back ORBIT — --orbit-r is 320px on desktop, shrinking so the circle + pills fit shorter/narrower screens */}

@@ -1,0 +1,109 @@
+<!doctype html>
+<!--
+  Source for the link-share banner (src/app/opengraph-image.jpg + twitter-image.jpg).
+  Rendered at 1200x630 by scripts/og/render.mjs — edit this file, then run:
+    node scripts/og/render.mjs
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=block" rel="stylesheet" />
+<style>
+  @font-face {
+    font-family: GS_HEADING;
+    src: url("../../public/fonts/GeneralSans-Semibold.woff");
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    position: relative;
+    overflow: hidden;
+    background: #ed1e24;
+    color: #fff;
+    font-family: Poppins, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Echo of the orbit rings in the "Strategic" section */
+  .ring {
+    position: absolute;
+    left: 910px; top: 315px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .ring.outer { width: 640px; height: 640px; border: 1px solid rgba(255,255,255,.22); }
+  .ring.inner { width: 470px; height: 470px; border: 1.5px dashed rgba(255,255,255,.3); }
+
+  /* ── Left column ── */
+  .brand {
+    position: absolute; left: 64px; top: 56px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .tile {
+    width: 60px; height: 60px; border-radius: 12px;
+    background: #202020;
+    display: grid; place-items: center;
+  }
+  .tile img { width: 40px; height: 40px; object-fit: contain; }
+  .url { font-size: 19px; font-weight: 500; letter-spacing: .01em; }
+
+  .copy { position: absolute; left: 64px; bottom: 56px; width: 600px; }
+  h1 {
+    font-family: GS_HEADING, sans-serif;
+    font-weight: 600;
+    font-size: 132px;
+    line-height: .9;
+    letter-spacing: -0.025em;
+  }
+  .tagline { margin-top: 22px; font-size: 25px; line-height: 1.3; }
+  .services { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; max-width: 520px; }
+  .services span {
+    border: 1px solid rgba(255,255,255,.7);
+    border-radius: 999px;
+    padding: 7px 16px 6px;
+    font-size: 15px; font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ── Reel cards ── */
+  .card {
+    position: absolute;
+    width: 196px; height: 348px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid #fff;
+    box-shadow: 0 30px 60px -18px rgba(0,0,0,.45);
+    background: #202020;
+  }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .c1 { left: 678px; top: 165px; transform: rotate(-8deg); z-index: 2; }
+  .c2 { left: 813px; top: 136px; z-index: 3; }
+  .c3 { left: 948px; top: 165px; transform: rotate(8deg); z-index: 1; }
+</style>
+</head>
+<body>
+  <div class="ring outer"></div>
+  <div class="ring inner"></div>
+
+  <div class="brand">
+    <div class="tile"><img src="mark.png" alt="" /></div>
+    <span class="url">yourcreativecorner.com</span>
+  </div>
+
+  <div class="copy">
+    <h1>Creative<br />Corner</h1>
+    <p class="tagline">We build digital experiences that stand out.</p>
+    <div class="services">
+      <span>Digital Marketing</span>
+      <span>Influencer Marketing</span>
+      <span>Video Production</span>
+      <span>Website Development</span>
+    </div>
+  </div>
+
+  <div class="card c1"><img src="../../public/Data/posters/IMG_2510-mid.webp" alt="" /></div>
+  <div class="card c2"><img src="../../public/Data/posters/IMG_7483-first.webp" alt="" /></div>
+  <div class="card c3"><img src="../../public/Data/posters/IMG_4842-first.webp" alt="" /></div>
+</body>
+</html>

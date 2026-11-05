@@ -64,6 +64,7 @@ const HeroSection = () => {
     >
       <h1 className="text-[7vw] Font_Main leading-[6vw] max-sm:text-[18vw] max-sm:leading-[18vw] Text_Color_A">
         Creative <br /> Corner
+        <span className="sr-only"> — digital marketing, influencer marketing and video production agency</span>
       </h1>
 
       <div className=" absolute w-full h-fit  flex justify-between items-center max-sm:top-[15%] max-sm:gap-2  max-sm:flex  max-sm:flex-col top-1/2 left-1/2 pointer-events-none -translate-x-1/2 -translate-y-1/2 px-10">
