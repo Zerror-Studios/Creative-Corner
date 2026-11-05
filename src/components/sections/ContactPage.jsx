@@ -484,9 +484,14 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { gsap } from "gsap";
 import { useContact } from "../contexts/ContactContext";
 
+// `company` is a honeypot: hidden from people, so only bots fill it in
+const EMPTY_FORM = { name: "", email: "", message: "", company: "" };
+
 export default function ContactPopup() {
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const { isContactOpen, setIsContactOpen } = useContact(); // ✅ Context works
 
   const modalRef = useRef(null);
@@ -554,6 +559,7 @@ export default function ContactPopup() {
     const overlay = overlayRef.current;
 
     setSubmitted(false);
+    setError("");
     overlay.style.display = "block";
     modal.style.pointerEvents = "auto";
 
@@ -617,14 +623,40 @@ export default function ContactPopup() {
         overlay.style.display = "none";
         modal.style.pointerEvents = "none";
         setIsContactOpen(false); // ✅ FIXED: Use context setter
-        setForm({ name: "", email: "", message: "" });
+        setForm(EMPTY_FORM);
+        setError("");
       },
     });
   }, [setIsContactOpen]);
 
-  const handleSubmit = useCallback((e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    console.log(form);
+    if (sending) return;
+    setSending(true);
+    setError("");
+
+    // Emails the enquiry to the client (src/app/api/contact/route.js). The success
+    // animation only plays once the email has actually gone out.
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Sorry, your message couldn't be sent. Please try again.");
+      }
+    } catch (err) {
+      setError(
+        err instanceof TypeError // fetch itself failed: offline / server unreachable
+          ? "Couldn't reach the server. Check your connection and try again."
+          : err.message,
+      );
+      setSending(false);
+      return;
+    }
+    setSending(false);
 
     const toHide = [headerRef.current, ...fieldsRef.current, submitRowRef.current];
 
@@ -660,11 +692,12 @@ export default function ContactPopup() {
         });
       },
     });
-  }, [form, burstParticles, closeModal]);
+  }, [form, sending, burstParticles, closeModal]);
 
   const handleChange = useCallback((e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }, [form]);
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
   function addFieldRef(el) {
     if (el && !fieldsRef.current.includes(el)) fieldsRef.current.push(el);
@@ -766,15 +799,37 @@ export default function ContactPopup() {
                     />
                   </div>
 
+                  {/* Honeypot — off-screen and skipped by keyboard and screen readers */}
+                  <div aria-hidden="true" className="absolute -left-[9999px] size-px overflow-hidden">
+                    <label>
+                      Company
+                      <input
+                        type="text"
+                        name="company"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={form.company}
+                        onChange={handleChange}
+                      />
+                    </label>
+                  </div>
+
                   <div ref={submitRowRef} className="mt-2">
                     <button
                       type="submit"
+                      disabled={sending}
+                      aria-busy={sending}
                       onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.04, duration: 0.18, ease: "power2.out" })}
                       onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, duration: 0.18 })}
-                      className="bg-black text-white py-3 px-7 rounded-full text-sm"
+                      className="bg-black text-white py-3 px-7 rounded-full text-sm disabled:opacity-60 disabled:cursor-wait"
                     >
-                      Send message
+                      {sending ? "Sending…" : "Send message"}
                     </button>
+                    {error && (
+                      <p role="alert" className="mt-3 text-sm text-[#ED1E24]">
+                        {error}
+                      </p>
+                    )}
                   </div>
                 </form>
               </>
