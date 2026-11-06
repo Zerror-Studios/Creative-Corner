@@ -140,7 +140,7 @@ export default function Footer() {
         </section>
       </div>
 
-      {/* ─── LINKS + BOTTOM BAR (dark band) ───────────────────── */}
+      {/* ─── LINKS + BOTTOM BAR (dark band) ───────── */}
       <div className="px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_auto_auto] gap-x-12 lg:gap-x-20 xl:gap-x-28 gap-y-12 py-12 lg:py-16">
           {/* Brand */}
@@ -217,7 +217,7 @@ export default function Footer() {
 
         {/* ─── BOTTOM BAR ───────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-white/25 py-6 text-xs sm:text-sm text-white/80">
-          <p className="max-sm:mx-auto">©2025 All Rights Reserved Creative Corner.</p>
+          <p className="max-sm:mx-auto">©2026 All Rights Reserved Creative Corner.</p>
           <div className="flex items-center gap-1 max-sm:mx-auto">
             Developed by
             <a
