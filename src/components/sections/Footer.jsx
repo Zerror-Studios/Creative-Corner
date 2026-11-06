@@ -10,8 +10,8 @@ const navLinks = [
 const contactLinks = [
   {
     label: "Email",
-    text: "contact-us@yourcreativecorner.com",
-    href: "mailto:contact-us@yourcreativecorner.com",
+    text: "contact@yourcreativecorner.com",
+    href: "mailto:contact@yourcreativecorner.com",
   },
   {
     label: "WhatsApp",
@@ -98,9 +98,9 @@ const ArrowIcon = () => (
 
 export default function Footer() {
   return (
-    <footer className="BGRED Font_Poppins text-white w-full">
-      <div className="px-5 sm:px-8 lg:px-12">
-        {/* ─── CTA ──────────────────────────────────────────────── */}
+    <footer className="bg-[#202020] Font_Poppins text-white w-full">
+      {/* ─── CTA (red band) ───────────────────────────────────── */}
+      <div className="BGRED px-5 sm:px-8 lg:px-12">
         <section className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto] md:items-end gap-10 lg:gap-16 pt-20 pb-14 sm:pt-24 lg:pt-32 lg:pb-20">
           <div>
             
@@ -138,21 +138,20 @@ export default function Footer() {
             />
           </div>
         </section>
+      </div>
 
-        {/* ─── LINKS ────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_auto_auto] gap-x-12 lg:gap-x-20 xl:gap-x-28 gap-y-12 border-t border-white/25 py-12 lg:py-16">
+      {/* ─── LINKS + BOTTOM BAR (dark band) ───────────────────── */}
+      <div className="px-5 sm:px-8 lg:px-12">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[minmax(0,1fr)_auto_auto] gap-x-12 lg:gap-x-20 xl:gap-x-28 gap-y-12 py-12 lg:py-16">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1 flex flex-row items-end justify-between lg:flex-col lg:items-start lg:justify-start gap-6">
-            {/* Dark tile keeps the red + white logo from blending into the red background */}
-            <div className="w-fit  bg-[#202020] p-4 sm:p-5">
-              <img
-                src={`/img/logo/logo.webp`}
-                alt="Creative Corner"
-                loading="lazy"
-                decoding="async"
-                className="h-16 sm:h-20 lg:h-24 w-auto"
-              />
-            </div>
+            <img
+              src={`/img/logo/logo.webp`}
+              alt="Creative Corner"
+              loading="lazy"
+              decoding="async"
+              className="h-16 sm:h-20 lg:h-24 w-auto"
+            />
 
             <div className="flex items-center gap-3">
               {socialLinks.map((item) => (
