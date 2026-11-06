@@ -22,7 +22,6 @@ const MeshMaker = ({ width, height, position, rotation, videoSrc, index, active 
   const materialRef = useRef();
 
   useEffect(() => {
-    // Create video element
     const video = document.createElement("video");
     video.crossOrigin = "anonymous";
     video.loop = true;
